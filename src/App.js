@@ -33,11 +33,14 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentDisplayedArticles, setCurrentDisplayedArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage + 1;
+
+  
 
   // Use memoization to minimize recalculation of sorted articles
   const sortedArticles = useMemo(
     () => getSortedAndFilteredArticles(newsData, searchTerm, sortOrder),
-    // eslint-disable-next-line
     [newsData, searchTerm, sortOrder]
   );
 
@@ -52,8 +55,8 @@ function App() {
       setCurrentDisplayedArticles(sortedArticles.slice(indexOfFirstArticle, indexOfLastArticle));
       
       setIsLoading(false);
-    }, 500);
-
+    }, 500); //Simulation
+  
     // Cleanup timer when unmounting
     return () => clearTimeout(timer);
   }, [currentPage, sortedArticles]);
@@ -85,11 +88,12 @@ function App() {
             {currentDisplayedArticles.map((article) => (
               <Article key={article.documentId} article={article} />
             ))}
-
-            {/* Pagination component */}
-            <div className="col-span-full flex justify-center items-center ">
-              <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-            </div>
+          <div className="col-span-full flex flex-col justify-center items-center mt-5">
+            <p>
+              Displaying articles <span className='text-xl font-bold'>{indexOfFirstArticle}</span> to <span className='text-xl font-bold'>{Math.min(indexOfLastArticle, sortedArticles.length)}</span> of {sortedArticles.length}
+            </p>
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+          </div>
           </div>
         </div>
       )}

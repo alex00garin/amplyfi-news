@@ -5,35 +5,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Rajdhani:wght@300;400;500;600;700&family=Roboto:wght@100;300;400;500;700;900&family=Syne:wght@400;500;600;700;800&display=swap');
 
 .readFull {
-    cursor: pointer;
-    position: relative;
-    border: none;
-    background: none;    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-    transition-duration: 400ms;
-    transition-property: color;
-  }
+  cursor: pointer;
+  position: relative;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: color;
+}
   
-  .readFull:focus,
-  .readFull:hover {
-    color: #000;
-  }
+.readFull:focus,
+.readFull:hover {
+  color: #000;
+}
+
+.readFull:focus:after,
+.readFull:hover:after {
+  width: 100%;
+  left: 0%;
+}
   
-  .readFull:focus:after,
-  .readFull:hover:after {
-    width: 100%;
-    left: 0%;
-  }
-  
-  .readFull:after {
-    content: "";
-    pointer-events: none;
-    bottom: 2px;
-    left: 50%;
-    position: absolute;
-    width: 0%;
-    height: 1px;
-    background-color: #000;
-    transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
-    transition-duration: 400ms;
-    transition-property: width, left;
-  }
+.readFull:after {
+  content: "";
+  pointer-events: none;
+  bottom: 2px;
+  left: 50%;
+  position: absolute;
+  width: 0%;
+  height: 1px;
+  background-color: #000;
+  transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition-duration: 400ms;
+  transition-property: width, left;
+}
