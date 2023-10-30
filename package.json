@@ -1,6 +1,5 @@
 {
   "name": "amplyfi-news",
-  "homepage": "https://alex00garin.github.io/amplyfi-news",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
