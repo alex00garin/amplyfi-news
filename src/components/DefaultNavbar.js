@@ -31,7 +31,7 @@ function DefaultNavbar({ searchTerm, setSearchTerm, setSortOrder }) {
       <Navbar.Toggle className='text-black bg-white border border-black ring-0 h-10 w-10' />
       <Navbar.Collapse className=''>
         {/* Sort order dropdown */}
-        <select className='ml-5 rounded-md w-28' onChange={e => setSortOrder(e.target.value)}>
+        <select className='font-syne ml-5 rounded-md w-28' onChange={e => setSortOrder(e.target.value)}>
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
         </select>
