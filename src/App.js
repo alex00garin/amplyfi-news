@@ -10,21 +10,8 @@ import LoadingIndicator from './components/LoadingIndicator';
 const articlesPerPage = 9;
 
 // Helper function to filter and sort articles
-const getSortedAndFilteredArticles = (data, searchTerm, sortOrder) => {
-  // Filtering articles based on the search term
-  const filtered = data.documents.filter(article =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  
-  // Sorting articles based on date and sort order
-  const sorted = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-  });
 
-  return sorted;
-};
+
 
 function App() {
   // State variables
@@ -35,14 +22,43 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const indexOfLastArticle = currentPage * articlesPerPage;
   const indexOfFirstArticle = indexOfLastArticle - articlesPerPage + 1;
+const [selectedTag, setSelectedTag] = useState(null);
+const yourResetTagFunction = () => {
+  setSelectedTag(null);  // Reset the selectedTag to null
+};
 
+const getSortedAndFilteredArticles = (data, searchTerm, sortOrder, selectedTag) => {
+  const filtered = data.documents.filter(article =>
+    article.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   
+  let tagFiltered = filtered;
+
+  if (selectedTag) {
+    tagFiltered = filtered.filter(article =>
+      article.sentences[0]?.alertTypes && article.sentences[0]?.alertTypes.includes(selectedTag)
+    );
+}
+
+
+  const sorted = [...tagFiltered].sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+  });
+
+  return sorted;
+};
+
 
   // Use memoization to minimize recalculation of sorted articles
   const sortedArticles = useMemo(
-    () => getSortedAndFilteredArticles(newsData, searchTerm, sortOrder),
-    [newsData, searchTerm, sortOrder]
+    () => getSortedAndFilteredArticles(newsData, searchTerm, sortOrder, selectedTag),
+    [searchTerm, sortOrder, selectedTag]
   );
+  
+  useEffect(() => {
+}, [sortedArticles]);
 
   // Effect for pagination and loading status
   useEffect(() => {
@@ -75,6 +91,8 @@ function App() {
         setSearchTerm={setSearchTerm}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        selectedTag={selectedTag}
+        resetTag={yourResetTagFunction} 
       />
 
       {/* Display loading indicator if data is being loaded */}
@@ -86,7 +104,7 @@ function App() {
           <div className="app font-syne grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {/* Map over current articles to display them */}
             {currentDisplayedArticles.map((article) => (
-              <Article key={article.documentId} article={article} />
+              <Article key={article.documentId} article={article} handleTagClick={setSelectedTag} />
             ))}
           <div className="col-span-full flex flex-col justify-center items-center mt-5">
             <p>

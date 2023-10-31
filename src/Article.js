@@ -16,9 +16,11 @@ const formatDate = (dateString) => {
 };
 
 // Article component
-const Article = ({ article }) => {
+const Article = ({ article, handleTagClick }) => {
 
-  
+  const tags = article.sentences[0]?.alertTypes || [];  // Get alertTypes as tags
+
+ 
   return (
     <ErrorBoundary>
       <div className='article grid m-4 rounded-lg border p-6 shadow-md bg-white hover:scale-110 hover:shadow-2xl transition duration-500'>
@@ -27,6 +29,15 @@ const Article = ({ article }) => {
         <h2 className='text-2xl font-semibold mb-4'>{article.title}</h2> {/* Display the article title */}
         <p className='text-md text-gray-700'>{article.sentences[0].text}</p> {/* Display the article content */}
         
+        <div className='tag-container mt-4 flex flex-wrap items-center'>
+        {tags.map((tag, index) => (
+          <button key={index} className='tag text-xs bg-blue-200 p-1 m-0.5 rounded inline-flex items-center justify-center' onClick={() => handleTagClick(tag)}>
+          {tag}
+        </button>
+  
+  ))}
+</div>
+
         {/* Display the SpeedDial component for sharing */}
         <div className='flex items-end justify-between mt-6'>
           <SpeedDial 
