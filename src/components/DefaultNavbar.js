@@ -7,7 +7,7 @@ function DefaultNavbar({ searchTerm, setSearchTerm, setSortOrder, selectedTag, r
 
   return (
     <Navbar fluid rounded className='shadow-md sticky top-0 z-50'>
-      <Navbar.Brand href='' className='gap-5'>
+      <Navbar.Brand href='#' className='gap-5'>
         <span className='self-center whitespace-nowrap text-xl font-semibold dark:text-white'>Amplyfi News</span>
         <div className='relative'>
           {/* Search input */}
