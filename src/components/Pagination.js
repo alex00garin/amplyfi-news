@@ -1,18 +1,25 @@
 import React from 'react';
 
+// Pagination component to manage and display pagination
 function Pagination({ currentPage, totalPages, paginate }) {
+  // Generate an array of page numbers based on current and total pages
   function generatePageNumbers() {
     const pageNumbers = [];
-  
+
+    // Show initial pages if on first two pages
     if (currentPage <= 2) {
       for (let i = 1; i <= 4; i++) {
         pageNumbers.push(i);
       }
-    } else if (currentPage >= totalPages - 1) {
+    } 
+    // Show last pages if on last two pages
+    else if (currentPage >= totalPages - 1) {
       for (let i = totalPages - 3; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
-    } else {
+    } 
+    // Show current page and one before & after it
+    else {
       for (let i = currentPage - 1; i <= currentPage + 1; i++) {
         pageNumbers.push(i);
       }
@@ -21,10 +28,10 @@ function Pagination({ currentPage, totalPages, paginate }) {
     return pageNumbers;
   }
   
-  
-
   return (
     <div className="mt-3 md:mt-5 ld:mt-12 text-sm md:text-lg lg:text-xl inline-flex items-center -space-x-px cursor-pointer font-syne">
+      
+      {/* Previous button */}
       <button
         onClick={() => paginate(currentPage - 1)}
         disabled={currentPage === 1}
@@ -33,6 +40,7 @@ function Pagination({ currentPage, totalPages, paginate }) {
         Previous
       </button>
 
+      {/* Display first page and ellipsis if not on first page */}
       {currentPage > 1 &&
         <>
           <span
@@ -45,6 +53,7 @@ function Pagination({ currentPage, totalPages, paginate }) {
         </>
       }
 
+      {/* Display generated page numbers */}
       {generatePageNumbers().map(number => (
         <span
           key={number}
@@ -55,6 +64,7 @@ function Pagination({ currentPage, totalPages, paginate }) {
         </span>
       ))}
 
+      {/* Display ellipsis and last page if not on last page */}
       {currentPage <= totalPages - 1 &&
         <>
           <span className='px-2'> ... </span>
@@ -67,6 +77,7 @@ function Pagination({ currentPage, totalPages, paginate }) {
         </>
       }
 
+      {/* Next button */}
       <button
         onClick={() => paginate(currentPage + 1)}
         disabled={currentPage === totalPages}

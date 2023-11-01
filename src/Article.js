@@ -17,28 +17,41 @@ const formatDate = (dateString) => {
 
 // Article component
 const Article = ({ article, handleTagClick }) => {
-
+  // Get tags from the article's alertTypes field
   const tags = article.sentences[0]?.alertTypes || [];  // Get alertTypes as tags
 
  
   return (
     <ErrorBoundary>
+      {/* Article wrapper */}
       <div className='article grid m-4 rounded-lg border p-6 shadow-md bg-white hover:scale-110 hover:shadow-2xl transition duration-500'>
-        <LoadingIndicator /> {/* Display a loading indicator */}
-        <p className='text-md text-gray-600'>{formatDate(article.date)}</p> {/* Format and display the article date */}
-        <h2 className='text-2xl font-semibold mb-4'>{article.title}</h2> {/* Display the article title */}
-        <p className='text-md text-gray-700'>{article.sentences[0].text}</p> {/* Display the article content */}
+        {/* Loading indicator */}
+        <LoadingIndicator />
         
+        {/* Display formatted date */}
+        <p className='text-md text-gray-600'>{formatDate(article.date)}</p>
+        
+        {/* Display article title */}
+        <h2 className='text-2xl font-semibold mb-4'>{article.title}</h2>
+        
+        {/* Display article content */}
+        <p className='text-md text-gray-700'>{article.sentences[0].text}</p>
+        
+        {/* Tag container */}
         <div className='tag-container mt-4 flex flex-wrap items-center'>
-        {tags.map((tag, index) => (
-          <button key={index} className='tag text-xs bg-blue-200 p-1 m-0.5 rounded inline-flex items-center justify-center' onClick={() => handleTagClick(tag)}>
-          {tag}
-        </button>
-  
-  ))}
-</div>
-
-        {/* Display the SpeedDial component for sharing */}
+          {/* Loop through tags and display them */}
+          {tags.map((tag, index) => (
+            <button 
+              key={index} 
+              className='tag text-xs bg-blue-100 hover:bg-blue-200 hover:shadow-lg p-1 m-0.5 rounded inline-flex items-center justify-center hover:scale-105 transition duration-300 ease-in-out' 
+              onClick={() => handleTagClick(tag)}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+        
+        {/* Social sharing buttons */}
         <div className='flex items-end justify-between mt-6'>
           <SpeedDial 
             url={article.url} 
@@ -46,7 +59,7 @@ const Article = ({ article, handleTagClick }) => {
             summary={article.sentences[0].text}
           />
           
-          {/* Provide a link to read the full article */}
+          {/* Link to read full article */}
           <a 
             target='_blank' 
             rel='noreferrer' 
@@ -61,4 +74,5 @@ const Article = ({ article, handleTagClick }) => {
   );
 };
 
-export default Article; // Export the Article component
+// Export the Article component
+export default Article; 

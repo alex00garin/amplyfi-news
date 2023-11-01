@@ -1,37 +1,44 @@
+/* Tailwind CSS imports */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Rajdhani:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap');
+
+/* Google Fonts import - Removed duplicate line */
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Rajdhani:wght@300;400;500;600;700&family=Roboto:wght@100;300;400;500;700;900&family=Syne:wght@400;500;600;700;800&display=swap');
 
+/* Custom class for "Read More" links */
 .readFull {
-  cursor: pointer;
-  position: relative;
+  cursor: pointer; /* Pointer cursor on hover */
+  position: relative; /* Relative positioning for pseudo-elements */
+  /* Transition properties for color */
   transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
   transition-duration: 400ms;
   transition-property: color;
 }
-  
+
+/* Hover and focus states */
 .readFull:focus,
 .readFull:hover {
-  color: #000;
+  color: #000; /* Text color */
 }
 
 .readFull:focus:after,
 .readFull:hover:after {
-  width: 100%;
-  left: 0%;
+  width: 100%; /* Full width underline */
+  left: 0%; /* Align to the left */
 }
-  
+
+/* Pseudo-element for underline */
 .readFull:after {
-  content: "";
-  pointer-events: none;
-  bottom: 2px;
-  left: 50%;
+  content: ""; /* Empty content */
+  pointer-events: none; /* No pointer events */
+  bottom: 2px; /* Position from the bottom */
+  left: 50%; /* Center alignment */
   position: absolute;
-  width: 0%;
-  height: 1px;
-  background-color: #000;
+  width: 0%; /* Initial width */
+  height: 1px; /* Underline thickness */
+  background-color: #000; /* Underline color */
+  /* Transition properties for width and left position */
   transition-timing-function: cubic-bezier(0.25, 0.8, 0.25, 1);
   transition-duration: 400ms;
   transition-property: width, left;
