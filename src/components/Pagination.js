@@ -1,48 +1,92 @@
-import { Pagination as FlowbitePagination } from 'flowbite-react';
+import React from 'react';
 
-export default function PaginationWithIcons({ currentPage, totalPages, paginate }) {
+// Pagination component to manage and display pagination
+function Pagination({ currentPage, totalPages, paginate }) {
+  // Generate an array of page numbers based on current and total pages
+  function generatePageNumbers() {
+    const pageNumbers = [];
 
-  // Handle page change
-  const onPageChange = (page) => {
-    paginate(page);
-  };
-
-  // Custom pagination theme
-  const customTheme = {
-    "base": "",
-    "layout": {
-      "table": {
-        "base": "text-md text-neutral-700 dark:text-neutral-400",
-        "span": "font-extrabold text-neutral-900 dark:text-white"
+    // Show initial pages if on first two pages
+    if (currentPage <= 2) {
+      for (let i = 1; i <= 4; i++) {
+        pageNumbers.push(i);
       }
-    },
-    "pages": {
-      "base": "xs:mt-0 mt-2 inline-flex items-center -space-x-px",
-      "showIcon": "inline-flex",
-      "previous": {
-        "base": "ml-0 rounded-l-lg border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500 enabled:hover:bg-neutral-100 enabled:hover:text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 enabled:dark:hover:bg-neutral-700 enabled:dark:hover:text-white",
-        "icon": "h-5 w-5"
-      },
-      "next": {
-        "base": "rounded-r-lg border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500 enabled:hover:bg-neutral-100 enabled:hover:text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 enabled:dark:hover:bg-neutral-700 enabled:dark:hover:text-white",
-        "icon": "h-5 w-5"
-      },
-      "selector": {
-        "base": "w-8 md:w-12 border border-neutral-300 bg-white py-2 leading-tight text-neutral-500 enabled:hover:bg-neutral-100 enabled:hover:text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400 enabled:dark:hover:bg-neutral-700 enabled:dark:hover:text-white",
-        "active": "bg-neutral-100 text-neutral-600 font-bold hover:bg-neutral-100 hover:text-neutral-700 dark:border-neutral-700 dark:bg-neutral-700 dark:text-white",
-        "disabled": "opacity-50 cursor-normal"
+    } 
+    // Show last pages if on last two pages
+    else if (currentPage >= totalPages - 1) {
+      for (let i = totalPages - 3; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } 
+    // Show current page and one before & after it
+    else {
+      for (let i = currentPage - 1; i <= currentPage + 1; i++) {
+        pageNumbers.push(i);
       }
     }
-  };
-
+  
+    return pageNumbers;
+  }
+  
   return (
-      <FlowbitePagination
-        currentPage={currentPage}
-        onPageChange={onPageChange}
-        showIcons
-        totalPages={totalPages}
-        theme={customTheme}
-        className='mt-5 md:mt-10 mx-5'
-      />
+    <div className="mt-3 md:mt-5 ld:mt-12 text-sm md:text-lg lg:text-xl inline-flex items-center -space-x-px cursor-pointer font-syne">
+      
+      {/* Previous button */}
+      <button
+        onClick={() => paginate(currentPage - 1)}
+        disabled={currentPage === 1}
+        className="ml-0 rounded-l-lg border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500"
+      >
+        Previous
+      </button>
+
+      {/* Display first page and ellipsis if not on first page */}
+      {currentPage > 1 &&
+        <>
+          <span
+            onClick={() => paginate(1)}
+            className={`${currentPage === 1 ? 'font-bold' : ''} border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500`}
+          >
+            1
+          </span>
+          <span className='px-2'> ... </span>
+        </>
+      }
+
+      {/* Display generated page numbers */}
+      {generatePageNumbers().map(number => (
+        <span
+          key={number}
+          onClick={() => paginate(number)}
+          className={`${currentPage === number ? 'font-bold' : ''} border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500`}
+        >
+          {number}
+        </span>
+      ))}
+
+      {/* Display ellipsis and last page if not on last page */}
+      {currentPage <= totalPages - 1 &&
+        <>
+          <span className='px-2'> ... </span>
+          <span
+            onClick={() => paginate(totalPages)}
+            className={`${currentPage === totalPages ? 'font-bold' : ''} border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500`}
+          >
+            {totalPages}
+          </span>
+        </>
+      }
+
+      {/* Next button */}
+      <button
+        onClick={() => paginate(currentPage + 1)}
+        disabled={currentPage === totalPages}
+        className="rounded-r-lg border border-neutral-300 bg-white py-2 px-3 leading-tight text-neutral-500"
+      >
+        Next
+      </button>
+    </div>
   );
-}
+};
+
+export default Pagination;

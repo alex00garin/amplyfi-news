@@ -9,39 +9,61 @@ import LoadingIndicator from './components/LoadingIndicator';
 // Constant for number of articles per page
 const articlesPerPage = 9;
 
-// Helper function to filter and sort articles
-const getSortedAndFilteredArticles = (data, searchTerm, sortOrder) => {
-  // Filtering articles based on the search term
-  const filtered = data.documents.filter(article =>
-    article.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  
-  // Sorting articles based on date and sort order
-  const sorted = [...filtered].sort((a, b) => {
-    const dateA = new Date(a.date);
-    const dateB = new Date(b.date);
-    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
-  });
-
-  return sorted;
-};
-
 function App() {
-  // State variables
+  // Define state variables
   const [searchTerm, setSearchTerm] = useState('');
   const [sortOrder, setSortOrder] = useState('newest');
   const [currentPage, setCurrentPage] = useState(1);
   const [currentDisplayedArticles, setCurrentDisplayedArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use memoization to minimize recalculation of sorted articles
+  // Calculate indices for slicing articles array based on current page
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage + 1;
+
+   // State for selected tags in articles
+  const [selectedTag, setSelectedTag] = useState(null);
+
+  // Function to reset selected tags
+  const resetTagFunction = () => {
+    setSelectedTag(null);
+  };
+
+  // Function to get sorted and filtered articles
+  const getSortedAndFilteredArticles = (data, searchTerm, sortOrder, selectedTag) => {
+    const filtered = data.documents.filter(article =>
+      article.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    
+    let tagFiltered = filtered;
+
+    if (selectedTag) {
+      tagFiltered = filtered.filter(article =>
+        article.sentences[0]?.alertTypes && article.sentences[0]?.alertTypes.includes(selectedTag)
+      );
+  }
+
+
+    const sorted = [...tagFiltered].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    return sorted;
+  };
+
+  // Memoize sorted articles to prevent re-sorting unless dependencies change
   const sortedArticles = useMemo(
-    () => getSortedAndFilteredArticles(newsData, searchTerm, sortOrder),
-    // eslint-disable-next-line
-    [newsData, searchTerm, sortOrder]
+    () => getSortedAndFilteredArticles(newsData, searchTerm, sortOrder, selectedTag),
+    [searchTerm, sortOrder, selectedTag]
   );
 
-  // Effect for pagination and loading status
+  // Memoize sorted articles to prevent re-sorting unless dependencies change
+  useEffect(() => {
+  }, [sortedArticles]);
+
+  // useEffect for handling pagination and showing a loading indicator
   useEffect(() => {
     setIsLoading(true);
 
@@ -52,16 +74,16 @@ function App() {
       setCurrentDisplayedArticles(sortedArticles.slice(indexOfFirstArticle, indexOfLastArticle));
       
       setIsLoading(false);
-    }, 500);
-
+    }, 500); //Simulation
+  
     // Cleanup timer when unmounting
     return () => clearTimeout(timer);
   }, [currentPage, sortedArticles]);
 
-  // Calculate total pages for pagination
+  // Calculate total number of pages
   const totalPages = Math.ceil(sortedArticles.length / articlesPerPage);
 
-  // Function to change the current page
+  // Function to set the current page
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
@@ -72,6 +94,8 @@ function App() {
         setSearchTerm={setSearchTerm}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        selectedTag={selectedTag}
+        resetTag={resetTagFunction} 
       />
 
       {/* Display loading indicator if data is being loaded */}
@@ -83,13 +107,14 @@ function App() {
           <div className="app font-syne grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {/* Map over current articles to display them */}
             {currentDisplayedArticles.map((article) => (
-              <Article key={article.documentId} article={article} />
+              <Article key={article.documentId} article={article} handleTagClick={setSelectedTag} />
             ))}
-
-            {/* Pagination component */}
-            <div className="col-span-full flex justify-center items-center ">
-              <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-            </div>
+          <div className="col-span-full flex flex-col justify-center items-center mt-5">
+            <p>
+              Displaying articles <span className='text-xl font-bold'>{indexOfFirstArticle}</span> to <span className='text-xl font-bold'>{Math.min(indexOfLastArticle, sortedArticles.length)}</span> of {sortedArticles.length}
+            </p>
+            <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+          </div>
           </div>
         </div>
       )}
